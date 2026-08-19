@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'organizations',
     'attachments',
     'task_attachments',
+    'teams',
 ]
 
 MIDDLEWARE = [
