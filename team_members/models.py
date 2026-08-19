@@ -1,5 +1,7 @@
 from django.db import models
 
+from teams.models import Team
+
 # Create your models here.
 class TeamMember(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
