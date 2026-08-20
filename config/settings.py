@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'projects',
+    'projects_attachments',
     'tasks',
     'organizations',
     'attachments',
