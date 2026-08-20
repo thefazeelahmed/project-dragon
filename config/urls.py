@@ -31,6 +31,7 @@ urlpatterns = [
     path("api/", include("projects_attachments.urls")),
     path("api/", include("user_profile.urls")),
     path("api/", include("user.urls")),
+    path("api/", include("user_profile_attachment.urls")),
 ]
 
 if settings.DEBUG:

@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     'team_members',
     'user',
     'user_profile',
+    'user_profile_attachment',
 ]
 
 MIDDLEWARE = [
