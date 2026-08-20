@@ -28,6 +28,7 @@ urlpatterns = [
     path("api/", include("task_attachments.urls")),
     path("api/", include("team_members.urls")),
     path("api/", include("teams.urls")),
+    path("api/", include("projects_attachments.urls")),
 ]
 
 if settings.DEBUG:
