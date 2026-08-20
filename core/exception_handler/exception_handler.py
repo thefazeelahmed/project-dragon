@@ -7,11 +7,12 @@ def custom_exception_handler(exc, context):
         response.data['status_code'] = response.status_code
         response.data['message'] = response.data['detail']
         response.data['data'] = None
-        response.data['errors'] = response.data['detail']
         response.data['success'] = False
-        response.data['timestamp'] = datetime.now().isoformat()
-        response.data['path'] = context['request'].path
-        response.data['method'] = context['request'].method
-        response.data['status'] = response.status_code
-        response.data['traceback'] = response.data['detail']
+        return response
+    response.data['status_code'] = 500
+    response.data['message'] = "Internal Server Error"
+    response.data['data'] = None
+    response.data['success'] = False
     return response
+
+
