@@ -1,18 +1,27 @@
-import datetime
+from rest_framework.response import Response
 from rest_framework.views import exception_handler
 
 def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
+
     if response is not None:
-        response.data['status_code'] = response.status_code
-        response.data['message'] = response.data['detail']
-        response.data['data'] = None
-        response.data['success'] = False
-        return response
-    response.data['status_code'] = 500
-    response.data['message'] = "Internal Server Error"
-    response.data['data'] = None
-    response.data['success'] = False
-    return response
+        detail = response.data.get("detail", response.data)
+        return Response(
+            {
+                "success": False,
+                "message": detail if isinstance(detail, str) else "Error",
+                "data": None,
+                "errors": response.data,
+            },
+            status=response.status_code,
+        )
 
-
+    return Response(
+        {
+            "success": False,
+            "message": "Internal Server Error",
+            "data": None,
+            "errors": {"detail": str(exc)},
+        },
+        status=500,
+    )
