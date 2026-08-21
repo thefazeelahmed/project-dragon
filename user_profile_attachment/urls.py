@@ -1,9 +1,12 @@
-from django.urls import path
 from rest_framework.routers import DefaultRouter
 
-from user_profile_attachment.views import UserProfileAttachmentView
+from user_profile_attachment.views import UserProfileAttachmentViewSet
 
 router = DefaultRouter()
-router.register(r'user-profile-attachment', UserProfileAttachmentView, basename='user-profile-attachment')
+router.register(
+    "user-profile-attachments",
+    UserProfileAttachmentViewSet,
+    basename="user-profile-attachments",
+)
 
 urlpatterns = router.urls
