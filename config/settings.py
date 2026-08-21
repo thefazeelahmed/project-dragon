@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'projects',
     'projects_attachments',
@@ -74,6 +75,7 @@ INSTALLED_APPS = [
     'user',
     'user_profile',
     'user_profile_attachment',
+    'authentication'
 ]
 
 MIDDLEWARE = [
@@ -168,17 +170,18 @@ STATIC_URL = 'static/'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "noreply@example.com")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:8000")
 
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "core.response.custom_pagination.CustomPagination",
     "DEFAULT_RENDERER_CLASSES": [
         "core.response.custom_renderer.CustomJSONRenderer",
+    ],
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
     ],
     "PAGE_SIZE": 10,
     "DEFAULT_FILTER_BACKENDS": [
@@ -189,3 +192,4 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+AUTH_USER_MODEL = "user.User"
