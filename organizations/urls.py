@@ -1,10 +1,8 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from organizations.views import OrganizationDetailView, OrganizationListCreateView
+from organizations.views import OrganizationViewSet
 
+router = DefaultRouter()
+router.register("organizations", OrganizationViewSet, basename="organizations")
 
-urlpatterns = [
-    path("organizations/", OrganizationListCreateView.as_view()),
-    path("organizations/<int:pk>/", OrganizationDetailView.as_view()),
-]
-
+urlpatterns = router.urls
