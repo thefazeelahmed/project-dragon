@@ -1,28 +1,36 @@
-from rest_framework.response import Response
+from django.conf import settings
 from rest_framework.views import APIView
 
-from core.response.response import success_response
+from authentication.emails import send_verification_email
+from authentication.serializers import SignupSerializer
+from authentication.services import create_verification_token
+from core.response.response import error_response, success_response
 from user.serializer import UserSerializer
 
 
 class SignupView(APIView):
-    def post(self, request):
-        serializer = UserSerializer(data=request.data)
+    authentication_classes = []
+    permission_classes = []
 
-        if serializer.is_valid():
-            user = serializer.save()
-            return success_response(
-                data=UserSerializer(user).data,
-                message="User signed up successfully",
-                status=201,
+    def post(self, request):
+        serializer = SignupSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                message="Signup failed",
+                errors=serializer.errors,
+                status=400,
             )
 
-        return Response(
-            {
-                "success": False,
-                "message": "Invalid credentials",
-                "data": None,
-                "errors": serializer.errors,
-            },
-            status=400,
+        user = serializer.save()
+        raw_token = create_verification_token(user, purpose="signup", hours=24)
+        send_verification_email(user, raw_token)
+
+        payload = UserSerializer(user).data
+        if settings.DEBUG:
+            payload["verification_token"] = raw_token
+
+        return success_response(
+            data=payload,
+            message="User signed up successfully. Please verify your email.",
+            status=201,
         )

@@ -1,42 +1,31 @@
-from django.contrib.auth import authenticate
-from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from core.response.response import success_response
+from authentication.serializers import LoginSerializer
+from core.response.response import error_response, success_response
 from user.serializer import UserSerializer
 
 
 class LoginView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
     def post(self, request):
-        email = request.data.get("email")
-        password = request.data.get("password")
-
-        if not email or not password:
-            return Response(
-                {
-                    "success": False,
-                    "message": "Email and password are required",
-                    "data": None,
-                    "errors": {"detail": "Missing credentials"},
-                },
-                status=400,
+        serializer = LoginSerializer(data=request.data, context={"request": request})
+        if not serializer.is_valid():
+            return error_response(
+                message="Login failed",
+                errors=serializer.errors,
+                status=401,
             )
 
-        # USERNAME_FIELD = "email", so authenticate(email=...) works
-        user = authenticate(request=request, email=email, password=password)
+        user = serializer.validated_data["user"]
+        token, _ = Token.objects.get_or_create(user=user)
 
-        if user is not None:
-            return success_response(
-                data=UserSerializer(user).data,
-                message="User logged in successfully",
-            )
-
-        return Response(
-            {
-                "success": False,
-                "message": "Invalid credentials",
-                "data": None,
-                "errors": {"detail": "Invalid email or password"},
+        return success_response(
+            data={
+                "user": UserSerializer(user).data,
+                "token": token.key,
             },
-            status=401,
+            message="User logged in successfully",
         )

@@ -32,7 +32,7 @@ urlpatterns = [
     path("api/", include("user_profile.urls")),
     path("api/", include("user.urls")),
     path("api/", include("user_profile_attachment.urls")),
-    path("api/", include("authentication.urls")),
+    path("auth/", include("authentication.urls")),
 ]
 
 if settings.DEBUG:
