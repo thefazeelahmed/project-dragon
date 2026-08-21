@@ -3,7 +3,8 @@ from rest_framework.views import APIView
 
 from authentication.serializers import LoginSerializer
 from core.response.response import error_response, success_response
-from user.serializer import UserSerializer
+from user_profile.models import UserProfile
+from user_profile.serializer import UserProfileSerializer
 
 
 class LoginView(APIView):
@@ -22,9 +23,20 @@ class LoginView(APIView):
         user = serializer.validated_data["user"]
         token, _ = Token.objects.get_or_create(user=user)
 
+        profile, _ = UserProfile.objects.get_or_create(user=user, defaults={"bio": ""})
+        profile = (
+            UserProfile.objects.filter(pk=profile.pk)
+            .select_related("user")
+            .prefetch_related(
+                "profile_attachments",
+                "profile_attachments__attachment",
+            )
+            .get()
+        )
+
         return success_response(
             data={
-                "user": UserSerializer(user).data,
+                "profile": UserProfileSerializer(profile).data,
                 "token": token.key,
             },
             message="User logged in successfully",

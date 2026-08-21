@@ -5,7 +5,8 @@ from authentication.emails import send_verification_email
 from authentication.serializers import SignupSerializer
 from authentication.services import create_verification_token
 from core.response.response import error_response, success_response
-from user.serializer import UserSerializer
+from user_profile.models import UserProfile
+from user_profile.serializer import UserProfileSerializer
 
 
 class SignupView(APIView):
@@ -22,10 +23,12 @@ class SignupView(APIView):
             )
 
         user = serializer.save()
+        profile = UserProfile.objects.create(user=user, bio="")
+
         raw_token = create_verification_token(user, purpose="signup", hours=24)
         send_verification_email(user, raw_token)
 
-        payload = UserSerializer(user).data
+        payload = UserProfileSerializer(profile).data
         if settings.DEBUG:
             payload["verification_token"] = raw_token
 

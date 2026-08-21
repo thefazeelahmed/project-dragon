@@ -2,9 +2,7 @@ from rest_framework import serializers
 
 from attachments.models import Attachment
 from attachments.serializers import AttachmentSerializer
-from user_profile.models import UserProfile
 from user_profile_attachment.models import UserProfileAttachment
-from user.serializer import UserSerializer
 
 
 class UserProfileAttachmentSerializer(serializers.ModelSerializer):
@@ -25,20 +23,3 @@ class UserProfileAttachmentSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    profile_attachments = UserProfileAttachmentSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = UserProfile
-        fields = [
-            "id",
-            "user",
-            "bio",
-            "profile_attachments",
-            "created_at",
-            "updated_at",
-        ]
-        read_only_fields = ["user", "created_at", "updated_at"]
