@@ -1,8 +1,8 @@
-from django.urls import path
-from .views import ProjectListCreateView
 from rest_framework.routers import DefaultRouter
 
+from .views import ProjectViewSet
+
 router = DefaultRouter()
-router.register(r"projects", ProjectListCreateView, basename="projects")
+router.register("projects", ProjectViewSet, basename="projects")
 
 urlpatterns = router.urls
