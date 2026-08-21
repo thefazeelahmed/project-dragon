@@ -74,6 +74,7 @@ INSTALLED_APPS = [
     'user',
     'user_profile',
     'user_profile_attachment',
+    'authentication'
 ]
 
 MIDDLEWARE = [
@@ -189,3 +190,4 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+AUTH_USER_MODEL = "user.User"
